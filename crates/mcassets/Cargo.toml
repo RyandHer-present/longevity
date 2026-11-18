@@ -1,0 +1,17 @@
+[package]
+name = "mcassets"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+blockdata = { path = "../blockdata" }
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+zip.workspace = true
+image.workspace = true
+parking_lot = "0.12"
+rayon.workspace = true
+
+[dev-dependencies]
+mcworld = { path = "../mcworld" }

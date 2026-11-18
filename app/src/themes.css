@@ -1,0 +1,366 @@
+/* ================================================================ themes
+   The original look ("atlas") lives in styles.css :root and is the default.
+   Each theme below overrides the palette on <html data-theme="…">, and the same
+   values are applied to [data-tp="…"] so the Settings swatches can preview them.
+   New CSS should only use the variables: --bg, --bg-2, --panel, --panel-2,
+   --panel-3, --line*, --text*, --accent, --accent-2, --accent-dim, and the
+   derived --accent-hi/-lo/-edge/-ink/-deep, --slot, --glass, --shade. */
+
+/* the default palette again, only for its swatch preview */
+[data-tp="atlas"] {
+  --bg: #0a0c0f;
+  --bg-2: #0e1115;
+  --panel: #13171c;
+  --panel-2: #181d23;
+  --panel-3: #1e242b;
+  --text: #ebe7df;
+  --text-2: #aeb0b0;
+  --text-3: #73787d;
+  --text-4: #4c5257;
+  --accent: #e2ad5a;
+  --accent-2: #f3cc8c;
+}
+
+/* accent shades for every theme except the default (which keeps its exact hand-picked ones) */
+:root[data-theme]:not([data-theme="atlas"]) {
+  --accent-hi: color-mix(in srgb, var(--accent) 88%, #fff);
+  --accent-lo: color-mix(in srgb, var(--accent) 88%, #000);
+  --accent-hi-2: color-mix(in srgb, var(--accent) 80%, #fff);
+  --accent-lo-2: color-mix(in srgb, var(--accent) 95%, #000);
+  --accent-edge: color-mix(in srgb, var(--accent-2) 75%, var(--accent));
+  --accent-ink: color-mix(in srgb, var(--accent) 12%, #000);
+  --accent-deep: color-mix(in srgb, var(--accent) 82%, #000);
+}
+
+/* Nether: crimson stone, ember accent */
+:root[data-theme="nether"],
+[data-tp="nether"] {
+  --bg: #0e0707;
+  --bg-2: #130a09;
+  --panel: #1a0f0e;
+  --panel-2: #211311;
+  --panel-3: #2a1815;
+  --text: #f1e5de;
+  --text-2: #c2aaa1;
+  --text-3: #8a716a;
+  --text-4: #5d4843;
+  --accent: #ec6a3f;
+  --accent-2: #ffb874;
+  --red: #ff6e62;
+}
+
+/* The End: void purple, pale end-stone yellow */
+:root[data-theme="end"],
+[data-tp="end"] {
+  --bg: #0a0810;
+  --bg-2: #0e0b16;
+  --panel: #14101e;
+  --panel-2: #1a1526;
+  --panel-3: #211b30;
+  --text: #ede9f3;
+  --text-2: #b1aabf;
+  --text-3: #787088;
+  --text-4: #504a5e;
+  --accent: #b88af2;
+  --accent-2: #ece7ad;
+  --purple: #cba2ff;
+}
+
+/* Deep Dark: near-black, sculk cyan */
+:root[data-theme="deep_dark"],
+[data-tp="deep_dark"] {
+  --bg: #04080a;
+  --bg-2: #060b0e;
+  --panel: #0a1115;
+  --panel-2: #0e171b;
+  --panel-3: #131f24;
+  --text: #ddeceb;
+  --text-2: #98b2b2;
+  --text-3: #5f797b;
+  --text-4: #3d5154;
+  --accent: #24d0de;
+  --accent-2: #a2f6f2;
+  --blue: #4fc3ea;
+}
+
+/* Cherry Grove: blossom pink */
+:root[data-theme="cherry"],
+[data-tp="cherry"] {
+  --bg: #0f0a0d;
+  --bg-2: #140d11;
+  --panel: #1b1217;
+  --panel-2: #22161d;
+  --panel-3: #2a1b24;
+  --text: #f6e9ef;
+  --text-2: #c6abb7;
+  --text-3: #8c7381;
+  --text-4: #5f4b57;
+  --accent: #f49cc2;
+  --accent-2: #ffd3e5;
+}
+
+/* Ocean: deep navy, prismarine and sea lantern */
+:root[data-theme="ocean"],
+[data-tp="ocean"] {
+  --bg: #050b11;
+  --bg-2: #071019;
+  --panel: #0b1621;
+  --panel-2: #0f1d2a;
+  --panel-3: #142535;
+  --text: #e2eef4;
+  --text-2: #a0b6c2;
+  --text-3: #667d8a;
+  --text-4: #43565f;
+  --accent: #5ec6a6;
+  --accent-2: #b4e2ff;
+  --blue: #6cb6ef;
+}
+
+/* Lush Caves: moss green, glow-berry orange */
+:root[data-theme="lush"],
+[data-tp="lush"] {
+  --bg: #080b07;
+  --bg-2: #0b100a;
+  --panel: #10170e;
+  --panel-2: #151e12;
+  --panel-3: #1b2617;
+  --text: #ecf1e4;
+  --text-2: #acb8a0;
+  --text-3: #737f69;
+  --text-4: #4c5645;
+  --accent: #98c95c;
+  --accent-2: #ffb84f;
+  --green: #a7d66f;
+}
+
+/* Desert: sandstone and terracotta */
+:root[data-theme="desert"],
+[data-tp="desert"] {
+  --bg: #0e0b08;
+  --bg-2: #13100b;
+  --panel: #1a1510;
+  --panel-2: #211b14;
+  --panel-3: #2a2219;
+  --text: #f3ebdc;
+  --text-2: #c2b39d;
+  --text-3: #887b68;
+  --text-4: #5c5244;
+  --accent: #db7b4b;
+  --accent-2: #efd7a2;
+}
+
+/* Pale Garden: washed-out grey-white, one faint creaking-eye orange */
+:root[data-theme="pale_garden"],
+[data-tp="pale_garden"] {
+  --bg: #0c0c0c;
+  --bg-2: #111111;
+  --panel: #181817;
+  --panel-2: #1e1e1d;
+  --panel-3: #262625;
+  --text: #efeeea;
+  --text-2: #b6b4ae;
+  --text-3: #7d7b77;
+  --text-4: #545350;
+  --accent: #d5d1c7;
+  --accent-2: #f39445;
+  --green: #a9b89c;
+  --blue: #a6b2bd;
+}
+
+/* Snowy Peaks: icy blue */
+:root[data-theme="snowy"],
+[data-tp="snowy"] {
+  --bg: #070a0f;
+  --bg-2: #0a0f16;
+  --panel: #0f151e;
+  --panel-2: #131b25;
+  --panel-3: #18212d;
+  --text: #eef4fa;
+  --text-2: #aab8c7;
+  --text-3: #6f7e8d;
+  --text-4: #4a5665;
+  --accent: #8fcbf2;
+  --accent-2: #e2f3ff;
+  --blue: #8fbff0;
+}
+
+/* ================================================================ switching: circular reveal */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+:root.theme-switching::view-transition-new(root) {
+  animation: theme-reveal 0.6s cubic-bezier(0.22, 0.7, 0.18, 1) both;
+}
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0px at var(--vt-x, 50%) var(--vt-y, 50%));
+  }
+  to {
+    clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 50%) var(--vt-y, 50%));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root.theme-switching::view-transition-new(root) {
+    animation-duration: 0.01s;
+  }
+}
+
+/* ================================================================ Settings: theme swatches */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(146px, 1fr));
+  gap: 12px;
+  padding: 16px 18px;
+}
+.tsw {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--panel);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition:
+    transform 0.2s var(--ease, ease),
+    border-color 0.2s,
+    box-shadow 0.25s;
+}
+.tsw:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: 0 10px 26px -14px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.tsw:active {
+  transform: translateY(0);
+}
+.tsw.on {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 1px var(--accent) inset,
+    0 10px 30px -14px color-mix(in srgb, var(--accent) 80%, transparent);
+}
+.tsw-prev {
+  position: relative;
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  height: 74px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.tsw-side {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 5px;
+  background: var(--bg-2);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+.tsw-side i {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--text-4);
+}
+.tsw-side i:first-child {
+  background: var(--accent);
+}
+.tsw-main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  background: radial-gradient(120px 70px at 100% 100%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%);
+}
+.tsw-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 5px;
+  background: var(--panel-2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.tsw-card b {
+  display: block;
+  width: 62%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--text);
+  opacity: 0.85;
+}
+.tsw-card span {
+  display: block;
+  width: 40%;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--text-3);
+}
+.tsw-bar {
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+.tsw-dots {
+  display: flex;
+  gap: 4px;
+  margin-top: auto;
+}
+.tsw-dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.tsw-dots i:nth-child(2) {
+  background: var(--accent-2);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--accent-2) 60%, transparent);
+}
+.tsw-dots i:nth-child(3) {
+  background: var(--panel-3);
+  box-shadow: none;
+}
+.tsw-check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: color-mix(in srgb, var(--accent) 12%, #000);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  animation: tsw-pop 0.35s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+@keyframes tsw-pop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.tsw-name {
+  padding: 0 2px;
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.tsw-sub {
+  margin-top: -5px;
+  padding: 0 2px;
+  font-size: 11.5px;
+  color: var(--text-3);
+}

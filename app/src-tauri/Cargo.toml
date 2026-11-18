@@ -1,0 +1,44 @@
+[package]
+name = "longevity"
+version = "1.0.0"
+description = "Longevity"
+edition = "2024"
+
+[lib]
+name = "longevity_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+tauri-plugin-opener = "2"
+tauri-plugin-single-instance = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-notification = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+rayon = "1"
+parking_lot = "0.12"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
+base64 = "0.22"
+reqwest = { version = "0.12", default-features = false, features = ["native-tls", "json", "blocking"] }
+zip = { version = "2", default-features = false, features = ["deflate"] }
+sha1 = "0.10"
+sha2 = "0.10"
+flate2 = "1"
+regex = "1"
+sysinfo = "0.37"
+trash = "5"
+arboard = { version = "3", default-features = false, features = ["image-data"] }
+winreg = "0.55"
+blockdata = { path = "../../crates/blockdata" }
+mcworld = { path = "../../crates/mcworld" }
+mcassets = { path = "../../crates/mcassets" }
+mesher = { path = "../../crates/mesher" }
+atlascore = { path = "../../crates/atlascore" }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = ["Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_UI_Accessibility", "Win32_Graphics_Gdi", "Win32_Security", "Win32_System_StationsAndDesktops", "Win32_System_Threading"] }

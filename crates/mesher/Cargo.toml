@@ -1,0 +1,13 @@
+[package]
+name = "mesher"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+blockdata = { path = "../blockdata" }
+mcassets = { path = "../mcassets" }
+
+[dev-dependencies]
+mcworld = { path = "../mcworld" }
+rayon.workspace = true
+anyhow.workspace = true

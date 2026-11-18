@@ -1,0 +1,16 @@
+[package]
+name = "mcworld"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+blockdata = { path = "../blockdata" }
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+rayon.workspace = true
+flate2.workspace = true
+fastnbt = "2"
+lz4_flex = { version = "0.11", default-features = false, features = ["std"] }
+parking_lot = "0.12"
+lru = "0.12"

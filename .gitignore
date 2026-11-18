@@ -1,0 +1,12 @@
+target/
+node_modules/
+app/dist/
+test/node_modules/
+test/out/
+extractor/cache/
+extractor/__pycache__/
+# kept local: the companion mod (built and handed over separately), personal spec/notes, tests
+companion/
+docs/
+test/
+app/icon-src/
