@@ -84,13 +84,19 @@ export function quadIndex(quads: number): THREE.BufferAttribute {
   return sharedIndex;
 }
 
+/** After upload nothing reads a mesh's arrays again (clicks ask the backend, bounds are set by
+ * hand), so the page's copy is dropped. If the GPU context is lost, the engine reloads chunks. */
+export function releaseAfterUpload(this: THREE.BufferAttribute) {
+  (this as unknown as { array: unknown }).array = null;
+}
+
 function geometryOf(b: Buf, minY: number, maxY: number): THREE.BufferGeometry {
   const g = new THREE.BufferGeometry();
-  g.setAttribute("position", new THREE.BufferAttribute(b.pos, 3));
-  g.setAttribute("auv", new THREE.BufferAttribute(b.uv, 2, true));
-  g.setAttribute("alayer", new THREE.BufferAttribute(b.layer, 1));
-  g.setAttribute("acolor", new THREE.BufferAttribute(b.color, 4, true));
-  g.setAttribute("aextra", new THREE.BufferAttribute(b.extra, 4));
+  g.setAttribute("position", new THREE.BufferAttribute(b.pos, 3).onUpload(releaseAfterUpload));
+  g.setAttribute("auv", new THREE.BufferAttribute(b.uv, 2, true).onUpload(releaseAfterUpload));
+  g.setAttribute("alayer", new THREE.BufferAttribute(b.layer, 1).onUpload(releaseAfterUpload));
+  g.setAttribute("acolor", new THREE.BufferAttribute(b.color, 4, true).onUpload(releaseAfterUpload));
+  g.setAttribute("aextra", new THREE.BufferAttribute(b.extra, 4).onUpload(releaseAfterUpload));
   g.setIndex(quadIndex(b.quads));
   g.setDrawRange(0, b.quads * 6);
   const lo = Math.min(minY, maxY),
@@ -148,6 +154,12 @@ export class ChunkManager {
     this.entries.clear();
     this.totalQuads = 0;
     this.lastFocus.set(1e9, 1e9);
+  }
+
+  /** Re-check what to keep on the next update (after the radius shrank). */
+  trimTo(_radius: number) {
+    this.lastFocus.set(1e9, 1e9);
+    this.wantList = [];
   }
 
   setSeen(seen: Set<string>) {

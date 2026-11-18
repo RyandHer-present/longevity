@@ -24,6 +24,8 @@ export interface Settings {
   notify_chapters: boolean;
   /** Longevity: icons-only sidebar */
   nav_collapsed?: boolean;
+  /** close the window when a game starts (default: stay open in a light mode) */
+  close_while_playing?: boolean;
   notify_goals?: boolean;
   notify_streak?: boolean;
   bookmarks?: string[];

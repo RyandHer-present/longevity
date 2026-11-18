@@ -388,6 +388,12 @@ fn frames(ctx: &crate::Ctx, dim: &str) -> HashMap<(i32, i32, i32), J> {
     out
 }
 
+/// The 3D view hasn't been shown for a while: let go of the chunks it read.
+#[tauri::command]
+pub fn w_trim(state: State<'_, AppState>) {
+    state.trim_caches();
+}
+
 #[tauri::command]
 pub async fn w_ray(state: State<'_, AppState>, dim: String, o: [f64; 3], d: [f64; 3], max: f64) -> R<J> {
     let ctx = state.view()?;

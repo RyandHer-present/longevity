@@ -389,6 +389,10 @@ export default function App() {
       if (i.assets_error) return;
       Engine.get().applyQuality(i.settings.quality || "high");
       Engine.get().setRenderDistance(i.settings.render_distance || 12);
+      // while Minecraft runs, the 3D view goes light so the game keeps the memory
+      const follow = (running: Record<string, number>) => Engine.get().setGameMode(Object.keys(running).length > 0);
+      follow(useLauncher.getState().running);
+      useLauncher.subscribe((s, prev) => s.running !== prev.running && follow(s.running));
       setStatus("Finding your worlds…");
       const worlds = await api.listWorlds();
       const oc = await api.takeOpenCard().catch(() => null);

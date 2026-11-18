@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { releaseAfterUpload } from "./chunks";
 import { lodUrl } from "../api";
 import { LOD_VERT, LOD_FRAG } from "./shaders";
 
@@ -173,9 +174,9 @@ export class LodTerrain {
         }
       }
     const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    g.setAttribute("acol", new THREE.BufferAttribute(col, 3, true));
-    g.setAttribute("aface", new THREE.BufferAttribute(face, 1));
+    g.setAttribute("position", new THREE.BufferAttribute(pos, 3).onUpload(releaseAfterUpload));
+    g.setAttribute("acol", new THREE.BufferAttribute(col, 3, true).onUpload(releaseAfterUpload));
+    g.setAttribute("aface", new THREE.BufferAttribute(face, 1).onUpload(releaseAfterUpload));
     const idx = new Uint32Array(quads * 6);
     for (let i = 0; i < quads; i++) {
       const v = i * 4,
@@ -187,8 +188,9 @@ export class LodTerrain {
       idx[o + 4] = v + 2;
       idx[o + 5] = v + 3;
     }
-    g.setIndex(new THREE.BufferAttribute(idx, 1));
+    // bounds first: the arrays are gone after the first draw
     g.computeBoundingSphere();
+    g.setIndex(new THREE.BufferAttribute(idx, 1).onUpload(releaseAfterUpload));
     const m = new THREE.Mesh(g, this.mat);
     m.matrixAutoUpdate = false;
     return m;

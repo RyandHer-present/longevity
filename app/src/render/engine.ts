@@ -103,6 +103,11 @@ export class Engine {
     this.canvas = document.createElement("canvas");
     this.canvas.className = "engine-canvas";
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: false, powerPreference: "high-performance", alpha: false, stencil: false });
+    this.canvas.addEventListener("webglcontextlost", (e) => e.preventDefault());
+    this.canvas.addEventListener("webglcontextrestored", () => {
+      this.chunks.reset(this.chunks.dim, this.chunks.seen);
+      this.lod.reset(this.lod.dim, this.lod.available);
+    });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     this.renderer.toneMapping = THREE.NeutralToneMapping;
     this.renderer.toneMappingExposure = 1.0;
@@ -223,7 +228,21 @@ export class Engine {
     this.applyQuality("high");
   }
 
+  /** The quality and distance from Settings; game mode lowers them while Minecraft runs. */
+  private userQuality = "high";
+  private userRadius = 12;
+  /** Minecraft is running: a light 3D view so the game keeps the memory. */
+  gameMode = false;
+  setGameMode(on: boolean) {
+    if (this.gameMode === on) return;
+    this.gameMode = on;
+    this.applyQuality(this.userQuality);
+    this.setRenderDistance(this.userRadius);
+  }
+
   applyQuality(q: string) {
+    this.userQuality = q;
+    if (this.gameMode) q = "low";
     this.quality = q;
     const high = q !== "low";
     this.mats.opaque.uniforms.uShadowOn.value = high ? 1 : 0;
@@ -234,13 +253,41 @@ export class Engine {
   }
 
   setRenderDistance(r: number) {
+    this.userRadius = r;
+    if (this.gameMode) r = Math.min(r, 8);
     this.chunks.radius = Math.max(4, Math.min(32, r));
+    // re-plan which chunks to keep or load (otherwise it waits until the camera moves a chunk)
+    this.chunks.trimTo(this.chunks.radius);
     const R = this.chunks.radius * 16;
     this.uniforms.uFogNear.value = R * 0.9;
     this.uniforms.uFogFar.value = Math.max(R * 3.2, 700);
   }
 
+  /** No page has shown the 3D view for a while: drop its meshes and the backend's chunk cache. */
+  private idleTimer: number | null = null;
+  private unloadIdle() {
+    this.idleTimer = null;
+    if (this.container) return;
+    this.chunks.reset(this.chunks.dim, this.chunks.seen);
+    this.lod.reset(this.lod.dim, this.lod.available);
+    invoke("w_trim").catch(() => {});
+    // while you play, also hand the graphics memory back (restored when a 3D page opens)
+    if (this.gameMode && !this.contextDropped) {
+      this.contextDropped = true;
+      this.renderer.forceContextLoss();
+    }
+  }
+  private contextDropped = false;
+
   attach(el: HTMLElement) {
+    if (this.idleTimer !== null) {
+      clearTimeout(this.idleTimer);
+      this.idleTimer = null;
+    }
+    if (this.contextDropped) {
+      this.contextDropped = false;
+      this.renderer.forceContextRestore();
+    }
     if (this.container === el) return;
     if (this.container) this.detach();
     this.container = el;
@@ -265,6 +312,9 @@ export class Engine {
     this.container = null;
     this.running = false;
     this.renderer.setAnimationLoop(null);
+    if (this.idleTimer !== null) clearTimeout(this.idleTimer);
+    // a quick hop to another page keeps the world; a longer stay frees it (sooner while playing)
+    this.idleTimer = window.setTimeout(() => this.unloadIdle(), this.gameMode ? 15_000 : 90_000);
   }
 
   get attached() {
@@ -525,9 +575,15 @@ export class Engine {
     for (const h of hidden) h.visible = true;
   }
 
+  private skip = 0;
   private tick() {
+    if (document.hidden) {
+      this.clock.getDelta();
+      return;
+    }
+    // while you play with Longevity in the background, a few frames a second is plenty
+    if (this.gameMode && !document.hasFocus() && this.skip++ % 12 !== 0) return;
     const dt = Math.min(0.1, this.clock.getDelta());
-    if (document.hidden) return;
     if (this.mode === "cinematic") this.updateCinematic(dt);
     else this.fadeTarget = 1;
     if (this.mode === "orbit") this.orbit.update();

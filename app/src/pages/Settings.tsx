@@ -190,6 +190,12 @@ export default function SettingsPage() {
               }}
             />
           </Row>
+          <Row
+            title="Close Longevity while I play"
+            sub="Off: it stays open while Minecraft runs, with a lighter 3D view so the game keeps the memory. On: it closes to the tray and comes back when you quit."
+          >
+            <Switch on={!!settings.close_while_playing} onChange={(v) => save({ close_while_playing: v })} />
+          </Row>
           <Row title="Icons-only sidebar" sub="A slimmer sidebar; hover an icon to see its name.">
             <Switch on={!!settings.nav_collapsed} onChange={(v) => save({ nav_collapsed: v })} />
           </Row>

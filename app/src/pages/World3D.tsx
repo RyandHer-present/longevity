@@ -744,6 +744,7 @@ export default function World3D() {
         </div>
         <div className="w3d-meta">
           {stats.fps} fps · {stats.chunks} chunks{stats.pending ? ` · loading ${stats.pending}` : ""}
+          {Engine.get().gameMode ? " · light while you play" : ""}
           {mode === "walk" ? ` · ${VIEW_LABEL[view]}` : ""}
         </div>
       </div>

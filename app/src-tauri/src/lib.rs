@@ -1,4 +1,4 @@
-//! LongTerm Atlas backend.
+//! Longevity backend.
 
 mod app;
 mod import;
@@ -71,6 +71,16 @@ impl AppState {
             std::thread::sleep(std::time::Duration::from_millis(50));
         }
         Err("Minecraft assets are still loading".into())
+    }
+    /// Empty the world readers' caches (the real world and an open Time Capsule).
+    pub fn trim_caches(&self) {
+        if let Some(c) = self.world.read().as_ref() {
+            c.world.trim();
+        }
+        if let Some((_, c)) = self.capsule.read().as_ref() {
+            c.world.trim();
+        }
+        self.icons.lock().clear();
     }
     fn ctx(&self) -> R<Arc<Ctx>> {
         self.world.read().clone().ok_or_else(|| "No world open".to_string())
@@ -831,9 +841,9 @@ async fn save_photo(data_url: String) -> R<String> {
     let b64 = data_url.split_once(',').map(|p| p.1).unwrap_or(&data_url);
     use base64::Engine;
     let bytes = base64::engine::general_purpose::STANDARD.decode(b64).map_err(err)?;
-    let pics = std::env::var("USERPROFILE").map(PathBuf::from).unwrap_or_default().join("Pictures").join("LongTerm Atlas");
+    let pics = std::env::var("USERPROFILE").map(PathBuf::from).unwrap_or_default().join("Pictures").join("Longevity");
     std::fs::create_dir_all(&pics).map_err(err)?;
-    let name = format!("atlas-{}.png", atlascore::now_ms());
+    let name = format!("longevity-{}.png", atlascore::now_ms());
     let p = pics.join(name);
     std::fs::write(&p, bytes).map_err(err)?;
     Ok(p.to_string_lossy().to_string())
@@ -1091,6 +1101,7 @@ pub fn run() {
             solid_box,
             walk::w_collide,
             walk::w_ray,
+            walk::w_trim,
             walk::w_toggle,
             walk::w_hide,
             walk::w_clear,

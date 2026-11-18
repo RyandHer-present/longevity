@@ -230,10 +230,16 @@ impl World {
         anyhow::ensure!(root.join("level.dat").is_file(), "no level.dat in {}", root.display());
         Ok(World {
             root: root.to_path_buf(),
-            regions: Mutex::new(lru::LruCache::new(NonZeroUsize::new(48).unwrap())),
+            regions: Mutex::new(lru::LruCache::new(NonZeroUsize::new(12).unwrap())),
             region_mtimes: Mutex::new(HashMap::new()),
-            chunks: Mutex::new(lru::LruCache::new(NonZeroUsize::new(6000).unwrap())),
+            chunks: Mutex::new(lru::LruCache::new(NonZeroUsize::new(1500).unwrap())),
         })
+    }
+
+    /// Forget the cached region files and decoded chunks (they're read again when needed).
+    pub fn trim(&self) {
+        self.regions.lock().clear();
+        self.chunks.lock().clear();
     }
 
     pub fn level(&self) -> Result<LevelInfo> {

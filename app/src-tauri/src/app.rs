@@ -220,7 +220,13 @@ pub fn on_run_event(app: &AppHandle, e: tauri::RunEvent) {
 
 // ---------------------------------------------------------------- game watcher
 
-/// Notices Minecraft starting and stopping. While a game runs, the window sleeps in the tray.
+/// Settings > "Close Longevity while I play" (off by default: it stays open in a light mode).
+fn close_while_playing() -> bool {
+    atlascore::Settings::load().extra.get("close_while_playing").and_then(|v| v.as_bool()).unwrap_or(false)
+}
+
+/// Notices Minecraft starting and stopping. While a game runs, the 3D view goes light (or the
+/// window sleeps in the tray, if the user chose that).
 fn watcher(app: AppHandle) {
     let mut prev: HashMap<String, (u32, u64)> = HashMap::new();
     loop {
@@ -238,7 +244,9 @@ fn watcher(app: AppHandle) {
                 });
                 let lstate = app.state::<launcher::LState>();
                 lstate.launched.lock().entry(id.clone()).or_insert((v.1 as i64) * 1000);
-                if !testing() && app.get_webview_window("main").is_some() {
+                // the game wants the memory: drop what Longevity can read again later
+                app.state::<crate::AppState>().trim_caches();
+                if !testing() && close_while_playing() && app.get_webview_window("main").is_some() {
                     app.state::<Shell>().reopen_after_game.store(true, Ordering::SeqCst);
                     // give the page a moment to save anything it was doing
                     let h = app.clone();
